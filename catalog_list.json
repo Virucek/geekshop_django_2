@@ -1,0 +1,17 @@
+[
+  {
+    "product_name": "overwatch",
+    "img": "img/poster_overwatch.jpg",
+    "text": "Постер по видеоигре Overwatch"
+  },
+  {
+    "product_name": "shawshank",
+    "img": "img/poster_shawshank.jpg",
+    "text": "Постер по кинофильму The Shawshank redemption"
+  },
+  {
+    "product_name": "nirvana",
+    "img": "img/poster_nirvana.jpg",
+    "text": "Постер рок-группы Nirvana"
+  }
+]

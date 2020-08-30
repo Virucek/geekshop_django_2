@@ -1,0 +1,36 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+
+{% block menu %}
+	{% include 'mainapp/includes/inc_main_menu.html' %}
+{% endblock %}
+
+{% block content %}
+	<h3>Напишите нам</h3>
+	<div class="contact_list">
+		<form action="#">
+			<table>
+				<tr>
+					<td><label for="name">Имя:</label></td>
+					<td><input type="text" name="name" placeholder="Введите ваше имя" class="contact" required="required"></td>
+				</tr>
+				<tr>
+					<td><label for="e-mail">E-mail:</label></td>
+					<td><input type="Email" name="e-mail" placeholder="Введите ваш e-mail" class="contact" required="required"></td>
+				</tr>
+				<tr>
+					<td><label for="theme">Тема:</label></td>
+					<td><input type="text" name="theme" placeholder="Введите тему сообщения" class="contact" required="required"></td>
+				</tr>
+			</table>
+			<label for="theme">Текст:</label><br>
+			<textarea name="text" placeholder="Введите текстовое поле" class="text_letter" required="required"></textarea><br>
+			<input type="submit" value="Отправить"> <input type="reset" value="Сбросить">
+		</form>
+	</div>
+	<h3>Адрес</h3>
+	<div class="address">
+		{% include 'mainapp/includes/inc_address.html' %}
+	</div>
+	<hr>
+{% endblock %}

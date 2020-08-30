@@ -1,0 +1,48 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+{% block content %}
+	<h1 style="text-align: center;">
+		{% block title_product %}
+		{% endblock %}
+	</h1>
+		<div class="brief">
+			<a href="{% static product_img %}" target="_blank"><img src="{% static product_img %}" alt="Image" class="full_image"></a>
+			<div class="brief_desc">
+				<h3>Краткое описание</h3>
+				<p>
+                    {% block brief_desc %}
+                    {% endblock %}
+                </p>
+			</div>
+			<input type="button" value="Купить">
+		</div>
+		<h3>Технические характеристики товара</h3>
+		<table class="tab_params">
+            {% block tab_params %}
+            {% endblock %}
+		</table>
+		<!--
+		<h3>Характеристики товара</h3>
+		<ul class="params">
+			<li>Размер: 71x101 см</li>
+			<li>Серия: Nirvana</li>
+			<li>Тип: Постер</li>
+		</ul>
+		-->
+		<h3>Подробное описание</h3>
+		<p class="full_desc">
+            {% block full_desc %}
+            {% endblock %}
+        </p>
+		<h3>Особенности товара</h3>
+		<p>
+            {% block product_special %}
+            {% endblock %}
+        </p>
+		<h3>Вас также может заинтересовать</h3>
+		<p>
+            {% block similar_product %}
+            {% endblock %}
+		</p>
+		<hr>
+{% endblock %}

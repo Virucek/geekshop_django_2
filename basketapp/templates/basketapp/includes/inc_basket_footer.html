@@ -1,0 +1,12 @@
+<tr>
+	<td><a href="{% url 'catalog:cat_index' %}" class="btn btn-warning text-white"><i class="fa fa-angle-left"></i> Продолжить покупки</a></td>
+	<td colspan="2" class="hidden-xs"></td>
+	<td class="hidden-xs text-center" style="width:10%;"><strong>Общ. сумма :
+		{% if baskets %}
+			{{ baskets.0.total_price }}
+		{% else %}
+			0.0
+		{% endif %}
+	</strong></td>
+	<td><a href="#" class="btn btn-success btn-block">Оплатить <i class="fa fa-angle-right"></i></a></td>
+</tr>

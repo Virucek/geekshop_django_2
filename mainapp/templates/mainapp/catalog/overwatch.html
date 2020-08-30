@@ -1,0 +1,37 @@
+{% extends 'mainapp/base_detail.html' %}
+{% load static %}
+
+{% block menu %}
+	{% include 'mainapp/includes/inc_main_menu.html' %}
+{% endblock %}
+
+{% block title_product %}
+	Overwatch постер
+{% endblock %}
+{% block brief_desc %}
+	Постер по комп. игре Overwatch
+{% endblock %}
+{% block tab_params %}
+	<tr>
+		<td>Размер</td>
+		<td>61x91,5 см</td>
+	</tr>
+	<tr>
+		<td>Серия</td>
+		<td>Overwatch</td>
+	</tr>
+	<tr>
+		<td>Тип</td>
+		<td>Постер</td>
+	</tr>
+{% endblock %}
+{% block full_desc %}
+	Постер Overwatch создан по мотивам компьютерной игры в жанре шутера от первого лица, разработанной компанией Blizzard Entertainment.
+{% endblock %}
+{% block product_special %}
+	Мерч по комп.игре
+{% endblock %}
+{% block similar_product %}
+	<a href="{% url 'detail' product_name='shawshank' %}"><img src="{% static 'img/poster_shawshank.jpg' %}" alt="Image" class="brief_image"></a>
+	<a href="{% url 'detail' product_name='nirvana' %}"><img src="{% static 'img/poster_nirvana.jpg' %}" alt="Image" class="brief_image"></a>
+{% endblock %}

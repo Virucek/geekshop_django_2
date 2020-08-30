@@ -1,0 +1,37 @@
+{% extends 'mainapp/base_detail.html' %}
+{% load static %}
+
+{% block menu %}
+	{% include 'mainapp/includes/inc_main_menu.html' %}
+{% endblock %}
+
+{% block title_product %}
+	The Shawshank Redemption постер
+{% endblock %}
+{% block brief_desc %}
+	Постер по кинофильму The Shawshank Redemption
+{% endblock %}
+{% block tab_params %}
+	<tr>
+		<td>Размер</td>
+		<td>61x105 см</td>
+	</tr>
+	<tr>
+		<td>Серия</td>
+		<td>The Shawshank Redemption</td>
+	</tr>
+	<tr>
+		<td>Тип</td>
+		<td>Постер</td>
+	</tr>
+{% endblock %}
+{% block full_desc %}
+	Постер The Shawshank Redemption создан по мотивам кинофильма Фрэнка Дорабонта, основанного на повести Стивена Кинга «Рита Хейуорт и спасение из Шоушенка» .
+{% endblock %}
+{% block product_special %}
+	ерч по кинофильму
+{% endblock %}
+{% block similar_product %}
+	<a href="{% url 'detail' product_name='overwatch' %}"><img src="{% static 'img/poster_overwatch.jpg' %}" alt="Image" class="brief_image"></a>
+	<a href="{% url 'detail' product_name='nirvana' %}"><img src="{% static 'img/poster_nirvana.jpg' %}" alt="Image" class="brief_image"></a>
+{% endblock %}

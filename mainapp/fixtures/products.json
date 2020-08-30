@@ -1,0 +1,118 @@
+[
+  {
+      "category": "Постеры",
+      "merch_type": "Музыка",
+      "name": "Nirvana постер",
+      "image": "products_images/poster_nirvana_xxo2C2Y.jpg",
+      "short_desc": "Постер рок-группы Nirvana",
+      "full_desc": "Постер Nirvana создан в честь американской рок-группы.",
+      "price": 2000.00,
+      "quantity": 7
+  },
+  {
+      "category": "Постеры",
+      "merch_type": "Видеоигры",
+      "name": "Постер по Overwatch",
+      "image": "products_images/poster_overwatch_U85Gyu0.jpg",
+      "short_desc": "Постер Overwatch",
+      "full_desc": "Постер Overwatch создан по мотивам компьютерной игры в жанре шутера от первого лица, разработанной компанией Blizzard Entertainment.",
+      "price": 1700.00,
+      "quantity": 15
+  },
+  {
+      "category": "Постеры",
+      "merch_type": "Кино",
+      "name": "Shawshank Redemption постер",
+      "image": "products_images/poster_shawshank_Kxd6yWo.jpg",
+      "short_desc": "Постер по кинофильму The Shawshank redemption",
+      "full_desc": "Постер The Shawshank Redemption создан по мотивам кинофильма Фрэнка Дорабонта, основанного на повести Стивена Кинга «Рита Хейуорт и спасение из Шоушенка» .",
+      "price": 1500.00,
+      "quantity": 20
+  },
+  {
+      "category": "Постеры",
+      "merch_type": "Кино",
+      "name": "The Green mile постер",
+      "image": "products_images/poster_green_mile.jpg",
+      "short_desc": "Постер по кинофильму The Green Mile",
+      "full_desc": "Постер The Green Mile создан по мотивам кинофильма Фрэнка Дорабонта, основанного на повести Стивена Кинга «Зелёная миля» .",
+      "price": 3500.00,
+      "quantity": 26
+  },
+  {
+      "category": "Постеры",
+      "merch_type": "Кино",
+      "name": "Pulp Fiction постер",
+      "image": "products_images/poster_pulp_fiction.jpg",
+      "short_desc": "Постер по кинофильму The Pulp Fiction (Криминальное чтиво)",
+      "full_desc": "Постер The Pulp Fiction создан по мотивам культового кинофильма Квентина Тарантино.",
+      "price": 1730.00,
+      "quantity": 69
+  },
+  {
+      "category": "Постеры",
+      "merch_type": "Кино",
+      "name": "Dunkirk постер",
+      "image": "products_images/poster_dunkirk.jpg",
+      "short_desc": "Постер по кинофильму Dunkirk (2017)",
+      "full_desc": "Постер Dunkirk (Дюнкерк, 2017) создан по мотивам кинофильма Кристофера Нолана.",
+      "price": 1500.00,
+      "quantity": 20
+  },
+  {
+      "category": "Футболки",
+      "merch_type": "Музыка",
+      "name": "Motorhead",
+      "image": "products_images/tshirt_1.png",
+      "short_desc": "Motorhead",
+      "full_desc": "Motorhead",
+      "price": 1500.00,
+      "quantity": 5
+  },
+  {
+      "category": "Футболки",
+      "merch_type": "Видеоигры",
+      "name": "Ведьмак",
+      "image": "products_images/tshirt_2.png",
+      "short_desc": "Футболка по игре Ведьмак  3",
+      "full_desc": "Полное описание",
+      "price": 2000.00,
+      "quantity": 1
+  },
+  {
+      "category": "Кружки",
+      "merch_type": "Музыка",
+      "name": "Цой",
+      "image": "products_images/cup_3.png",
+      "short_desc": "Цой",
+      "price": 2000.00,
+      "quantity": 54
+  },
+  {
+      "category": "Кружки",
+      "merch_type": "Кино",
+      "name": "Апокалипсис сегодня",
+      "image": "products_images/cup_1.png",
+      "short_desc": "кружка с принтом Апокалипсис сегодня",
+      "full_desc": "Кружка с принтом по кинофильму Апокалипсис сегодня",
+      "price": 500.00,
+      "quantity": 5
+  },
+  {
+      "category": "Кружки",
+      "merch_type": "Видеоигры",
+      "name": "Minecraft",
+      "image": "products_images/cup_2.jpg",
+      "short_desc": "Кружка по Minecraft",
+      "full_desc": "Кружка по Minecraft",
+      "price": 555.00,
+      "quantity": 4
+  },
+  {
+      "category": "Шапка",
+	  "merch_type": "Test",
+	  "name": "Тестовая шапка",
+	  "image": "products_images/hat_test.jpg",
+	  "price": 1500.00
+  }
+]

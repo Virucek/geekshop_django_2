@@ -1,0 +1,34 @@
+[
+	{
+		"model": "mainapp.ProductCategory",
+		"pk":5,
+		"fields": {
+			"name": "Брелок",
+			"descx": "Брелки с символикой"
+		}
+	},
+	{
+		"model": "mainapp.ProductCategory",
+		"pk":6,
+		"fields": {
+			"name": "Шапка"
+		}
+	},
+	{
+		"model": "mainapp.MerchType",
+		"pk":4,
+		"fields":{
+			"name": "Test"
+		}
+	},
+	{
+		"model": "mainapp.Product",
+		"fields":{
+			"category": 6,
+			"merch_type":4,
+			"name": "Тестовая шапка",
+			"image": "products_images/hat_test.jpg",
+			"price": 1500.00
+		}
+	}
+]

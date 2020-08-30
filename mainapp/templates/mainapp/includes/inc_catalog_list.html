@@ -1,0 +1,25 @@
+{% load static %}
+<div class="paginator">
+    {% if catalog_list.has_previous %}
+    <a href="?page={{ catalog_list.previous_page_number }}">
+              <
+    </a>
+    {% endif %}
+    <span class="current">
+        страница {{ catalog_list.number }} из
+        {{ catalog_list.paginator.num_pages }}
+    </span>
+    {% if catalog_list.has_next %}
+    <a href="?page={{ catalog_list.next_page_number }}">
+              >
+    </a>
+    {% endif %}
+</div>
+{% for item in catalog_list %}
+    <div class="catalog_list product">
+        <a href="{% url 'catalog:product' item.pk %}">
+            <img src="/media/{{ item.image }}" alt="{{item.name}}">
+            <p class="text">{{item.name}}</p>
+        </a>
+    </div>
+{% endfor %}

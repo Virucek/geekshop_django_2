@@ -1,0 +1,46 @@
+{% extends 'adminapp/base.html' %}
+{% load static %}
+{% load media_tags %}
+
+{% block content %}
+    <div class="product_read">
+        <div class="product_name">
+            <p>Категория: {{ object.category.name | title }}</p>
+            {% if object.merch_type %}
+            <p>Тип мерча: {{ object.merch_type.name | title }}</p>
+            {% endif %}
+            <p>Имя товара: {{ object.name | title }}</p>
+        </div>
+        <img src="{{ object.image|media_folder_products }}" alt="{{ object.name }}">
+        <div>
+            <p>Краткое описание:</p>
+            <p>{{ object.short_desc }}</p>
+            <p>Полное описание:</p>
+            <p>{{ object.full_desc }}</p>
+            <p>Цена: {{ object.price }}</p>
+            <p>Количество: {{ object.quantity }}</p>
+            <p>Активный: {% if object.is_active %}да{% else %}нет{% endif %}</p>
+            <p>
+                <a href="{% url 'admin:product_edit' object.pk %}">
+                    <button>
+                        редактировать
+                    </button>
+                </a>
+                <a href="{% url 'admin:product_delete' object.pk %}">
+                    <button>
+                        {% if object.is_active %}
+                        удалить
+                        {% else %}
+                        восстановить
+                        {% endif %}
+                    </button>
+                </a>
+                <a href="{% url 'admin:products' object.category.pk %}">
+                    <button>
+                        к списку
+                    </button>
+                </a>
+            </p>
+        </div>
+    </div>
+{% endblock %}

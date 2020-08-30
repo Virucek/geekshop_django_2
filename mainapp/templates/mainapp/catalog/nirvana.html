@@ -1,0 +1,37 @@
+{% extends 'mainapp/base_detail.html' %}
+{% load static %}
+
+{% block menu %}
+	{% include 'mainapp/includes/inc_main_menu.html' %}
+{% endblock %}
+
+{% block title_product %}
+	Nirvana постер
+{% endblock %}
+{% block brief_desc %}
+	Постер Nirvana
+{% endblock %}
+{% block tab_params %}
+	<tr>
+		<td>Размер</td>
+		<td>71x101 см</td>
+	</tr>
+	<tr>
+		<td>Серия</td>
+		<td>Nirvana</td>
+	</tr>
+	<tr>
+		<td>Тип</td>
+		<td>Постер</td>
+	</tr>
+{% endblock %}
+{% block full_desc %}
+	Постер Nirvana создан в честь американской рок-группы.
+{% endblock %}
+{% block product_special %}
+	Мерч музыкальный
+{% endblock %}
+{% block similar_product %}
+<a href="{% url 'detail' product_name='overwatch' %}"><img src="{% static 'img/poster_overwatch.jpg' %}" alt="Image" class="brief_image"></a>
+<a href="{% url 'detail' product_name='shawshank' %}"><img src="{% static 'img/poster_shawshank.jpg' %}" alt="Image" class="brief_image"></a>
+{% endblock %}

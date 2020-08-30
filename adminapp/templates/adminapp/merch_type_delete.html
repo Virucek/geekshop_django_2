@@ -1,0 +1,20 @@
+{% extends 'adminapp/base.html' %}
+{% load static %}
+
+
+{% block content %}
+    <div class="merch_type_delete">
+        Уверены, что хотите {% if object.is_active %}удалить{% else %}восстановить{% endif %} тип <strong>{{ object.name }}</strong>?
+        <form action="{% url 'admin:merch_type_delete' object.pk %}" method="post">
+            {% csrf_token %}
+            {% if object.is_active %}
+            <input class="btn btn-danger" type="submit" value="удалить">
+            {%else%}
+            <input class="btn btn-primary" type="submit" value="восстановить">
+            {% endif %}
+        </form>
+        <a href="{% url 'admin:merch_types' %}">
+            <button class="btn btn-success">отмена</button>
+        </a>
+    </div>
+{% endblock %}

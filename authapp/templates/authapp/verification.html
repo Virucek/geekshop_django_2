@@ -1,0 +1,21 @@
+{% extends 'authapp/base.html' %}
+
+{% block content %}
+    <p>
+        {% if user %}
+            {% if error_message %}
+                {{ error_message }}
+            {% else %}
+                Привет, {{ user.username }}!<br>
+                Поздравляем, ты окончил свою регистрацию!
+            {% endif %}
+        {% else %}
+            Ошибка, регистрацию окончить не удалось
+        {% endif %}
+    </p>
+    <a href="{% url 'main' %}">
+        <button class="btn btn-round form-control last">
+            На главную
+        </button>
+    </a>
+{% endblock %}

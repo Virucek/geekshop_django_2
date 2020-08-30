@@ -1,0 +1,27 @@
+{% if baskets %}
+	{% for prod in baskets %}
+		<tr>
+			<td>
+				<div class="row">
+					<div class="col-lg-2 Product-img">
+						<img src="/media/{{ prod.product.image }}" alt="{{ prod.product.name }}" class="img-responsive"/>
+					</div>
+					<div class="col-lg-10">
+						<h4 class="nomargin">{{ prod.product.name }}</h4>
+						<p>{{ prod.product.full_desc }}</p>
+					</div>
+				</div>
+			</td>
+			<td> {{ prod.product.price }} </td>
+			<td data-th="Количество">
+				<input type="number" name="{{ prod.pk }}" class="form-control text-center" value="{{ prod.quantity }}">
+			</td>
+			<td>{{ prod.product_price }}</td>
+			<td class="actions" data-th="" style="width:10%;">
+				<button class="btn btn-danger btn-sm" onclick="location.href='{% url 'basket:remove' prod.pk %}'"><i class="fa fa-trash-o"></i></button>
+			</td>
+		</tr>
+	{% endfor %}
+{% else %}
+	<tr><td>Корзина пока пуста. Пополните же её наконец ! :)</td></tr>
+{% endif %}

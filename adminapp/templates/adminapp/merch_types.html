@@ -1,0 +1,34 @@
+{% extends 'adminapp/base.html' %}
+{% load static %}
+
+
+{% block content %}
+    <div class="merch_types_list">
+        <a href="{% url 'admin:merch_type_create' %}">
+            <button class="new_merch_type">новый тип мерча</button>
+        </a>
+
+        {% for object in object_list %}
+            <div class="merch_type_record {% if not object.is_active %}not_active{% endif %}">
+                <div class="merch_type_name">
+                    {{ object.name|title }}
+                </div>
+                <div class="merch_type_actions">
+                    <a href="{% url 'admin:merch_type_edit' object.pk %}">
+                        <button>редактировать</button>
+                    </a>
+                    <a href={% url 'admin:merch_type_delete' object.pk %}>
+                        <button>
+                        {% if object.is_active %}удалить
+                        {% else %}восстановить
+                        {% endif %}
+                        </button>
+                    </a>
+                </div>
+                <div class="merch_type_desc">
+                    {{ object.description|title }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

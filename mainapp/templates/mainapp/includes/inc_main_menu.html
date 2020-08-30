@@ -1,0 +1,36 @@
+{% load static %}
+<ul class="menu">
+    <li>
+        <a href="{% url 'main' %}" {% if request.resolver_match.url_name == 'main' %} class='active' {% endif %}>
+            Главная
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'catalog:cat_index' %}" {% if request.resolver_match.namespace == 'catalog' %} class='active' {% endif %}>
+            Каталог
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'contacts' %}" {% if request.resolver_match.url_name == 'contacts' %} class='active' {% endif %}>
+            Контакты
+        </a>
+    </li>
+    {% if user.is_superuser %}
+    <li>
+        <a href="{% url 'admin:users' %}">
+            Админка
+        </a>
+    </li>
+    {% endif %}
+    <li>
+        <a href="{% url 'basket:view' %}" class="basket"> <img src="{% static 'img/basket.png' %}">
+            <span>
+                {% if not user.is_authenticated %} Авторизуйтесь {% else %}
+                {% if basket %} {{ basket.0.total_price }} руб., {{ basket.0.total_quantity }} кол-во
+                {% else %} Корзина пуста
+                {% endif %}
+                {% endif %}
+            </span>
+        </a>
+    </li>
+</ul>

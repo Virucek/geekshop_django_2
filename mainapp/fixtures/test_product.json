@@ -1,0 +1,12 @@
+[
+		{
+		"model": "mainapp.Product",
+		"fields":{
+			"category": 3,
+			"merch_type":3,
+			"name": "Тестовая шапка",
+			"image": "products_images/hat_test.jpg",
+			"price": 1500.00
+		}
+	}
+]

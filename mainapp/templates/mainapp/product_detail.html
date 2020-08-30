@@ -1,0 +1,49 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+
+{% block menu %}
+	{% include 'mainapp/includes/inc_main_menu.html' %}
+{% endblock %}
+
+{% block content %}
+	{% include 'mainapp/includes/inc_submenu.html' %}
+	<h1 style="text-align: center;">
+		{{ product.name }}
+	</h1>
+		<div class="brief">
+			<a href="/media/{{ product.image }}" target="_blank"><img src="/media/{{ product.image }}" alt="{{ product.short_desc }}" class="full_image"></a>
+			<div class="brief_desc">
+				<h3>Краткое описание</h3>
+				<p>
+					{{ product.short_desc }}
+                </p>
+			</div>
+			<input type="button" onclick="location.href='{% url 'basket:add' product.pk %}';" value="Купить">
+		</div>
+<!--		<h3>Технические характеристики товара</h3>-->
+<!--		<table class="tab_params">-->
+<!--            {% block tab_params %}-->
+<!--            {% endblock %}-->
+<!--		</table>-->
+		{% if product.full_desc %}
+		<h3>Подробное описание</h3>
+		<p class="full_desc">
+			{{ product.full_desc }}
+        </p>
+		{% endif %}
+		<h3>Особенности товара</h3>
+		<p>
+			{{ product.merch_type.descx }}
+        </p>
+		{% if same_products %}
+		<h3>Вас также может заинтересовать</h3>
+		<p>
+			{% for prod in same_products %}
+			<a href="{% url 'catalog:product' prod.pk %}">
+				<img src="/media/{{ prod.image }}" alt="{{ prod.short_desc }}" class="brief_image">
+			</a>
+			{% endfor %}
+		</p>
+		{% endif %}
+		<hr>
+{% endblock %}

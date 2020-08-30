@@ -1,0 +1,20 @@
+<ul class="submenu">
+    <li>
+        <a href="{% url 'catalog:category' 0%}"
+           {% if request.resolver_match.kwargs.pk == 0 %}
+                class="active"
+                {% endif %}>
+            Все
+        </a>
+    </li>
+    {% for i in submenu_list %}
+    <li>
+        <a href="{% url 'catalog:category' i.pk %}"
+           {% if request.resolver_match.kwargs.pk == i.pk %}
+                class="active"
+                {% endif %}>
+            {{ i.name }} {{test}}
+        </a>
+    </li>
+    {% endfor %}
+</ul>

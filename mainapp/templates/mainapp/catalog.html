@@ -1,0 +1,28 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+
+{% block menu %}
+	{% include 'mainapp/includes/inc_main_menu.html' %}
+{% endblock %}
+
+{% block content %}
+	{% if request.resolver_match.kwargs.pk is None %}
+		<div class="hot_product">
+			<a href="{% url 'catalog:product' hot_product.pk %}">
+			<img src="/media/{{ hot_product.image }}">
+			</a>
+			<div class="hot_desc">
+				<h2>Горячее предложение</h2>
+				<p class="text">{{ hot_product.name }}</p>
+				<p class="text">{{ hot_product.short_desc }}</p>
+				<input type="button" value="Купить" class="buy_button" onclick="location.href='{% url 'basket:add' hot_product.pk %}';">
+			</div>
+		</div>
+	{% endif %}
+	<div class="catalog_list">
+		<h1>Каталог товаров</h1>
+		{% include 'mainapp/includes/inc_submenu.html' %}
+		{% include 'mainapp/includes/inc_catalog_list.html' %}
+	</div>
+	<hr>
+{% endblock %}
