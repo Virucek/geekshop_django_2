@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from authapp.forms import ShopUserLoginForm, ShopUserRegisterForm, ShopUserEditForm
+from authapp.forms import ShopUserLoginForm, ShopUserRegisterForm, ShopUserEditForm, ShopUserProfileEditForm
 from authapp.models import ShopUser
 
 
@@ -28,7 +28,7 @@ def verify(request, email, activation_key):
         if user.activation_key == activation_key and not user.is_activation_key_expired() and not user.is_active:
             user.is_active = True
             user.save()
-            auth.login(request, user)
+            auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         elif user.activation_key != activation_key:
             print(f'{_error} - user_activation key != activation key from request!')
             error_message = 'Просим прощения, но ваш ключ активации недействителен'
@@ -106,16 +106,19 @@ def edit(request):
 
     if request.method == 'POST':
         edit_form = ShopUserEditForm(data=request.POST, instance=request.user, files=request.FILES)
+        profile_form = ShopUserProfileEditForm(data=request.POST, instance=request.user.shopuserprofile)
 
-        if edit_form.is_valid():
+        if edit_form.is_valid() and profile_form.is_valid():
             edit_form.save()
             return HttpResponseRedirect(reverse('auth:edit'))
 
     else:
         edit_form = ShopUserEditForm(instance=request.user)
+        profile_form = ShopUserProfileEditForm(instance=request.user.shopuserprofile)
 
     content = {
         'title': title,
         'edit_form': edit_form,
+        'profile_form': profile_form,
     }
     return render(request, 'authapp/edit.html', context=content)
