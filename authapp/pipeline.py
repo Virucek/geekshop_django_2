@@ -79,7 +79,7 @@ def save_user_profile(backend, user, response, *args, **kwargs):
 
             if (year + 18, month, day) > (today.year, today.month, today.day):
                 user.delete()
-                raise AuthForbidden('social_core.backends.vk.VKOAuth2')
+                raise AuthForbidden('social_core.backends.google.GoogleOAuth2')
             bdate = date(year, month, day)
             user.age = (today - bdate).days / 365
 
