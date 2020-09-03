@@ -11,6 +11,7 @@ body {
 
 html, body {
 	height: 100%;
+	padding: 0 5%;
 }
 
 body form {
@@ -446,6 +447,10 @@ body form {
     display: block;
     height: 170px;
     float: none;
+}
+
+.basket_list .basket_record img {
+    height: 170px;
 }
 
 .basket_container .head {
