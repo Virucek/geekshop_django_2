@@ -1,0 +1,54 @@
+{% extends "ordersapp/base.html" %}
+{% load static %}
+{% load media_tags %}
+
+{% block content %}
+   {% include 'adminapp/includes/inc_admin_order.html' %}
+   <div class="basket_list admin_form">
+       {% for item in object.orderitems.select_related %}
+           <div class="basket_record">
+               <img src="{{ item.product.image|media_folder_products }}"
+                    alt="{{ item.product.short_desc }}">
+               <span class="category_name">
+                   {{ item.product.category.name }}
+               </span>
+               <span class="product_name">{{ item.product.name }}</span>
+               <span class="product_price">
+                   {{ item.product.price }}&nbspруб
+               </span>
+               <span class="product_quantitiy">
+                   x {{ item.quantity }} шт.
+               </span>
+               <span class="product_cost">
+                    = {{ item.get_product_cost }}&nbspруб
+               </span>
+           </div>
+       {% endfor %}
+       <p>
+           <a href="{% url 'admin:order_update' object.pk %}">
+               <button>
+                   редактировать
+               </button>
+           </a>
+       </p>
+       <p>
+           <a href="{% url 'admin:order_delete' object.pk %}">
+               <button>
+                   {% if object.is_active %}
+                        удалить
+                   {% else %}
+                        восстановить
+                   {% endif %}
+               </button>
+           </a>
+       </p>
+       <p>
+           <a href="{% url 'admin:orders' %}">
+               <button>
+                   к списку
+               </button>
+           </a>
+       </p>
+
+
+{% endblock %}

@@ -23,7 +23,14 @@ urlpatterns = [
     path('products/delete/<int:pk>/', adminapp.ProductDeleteView.as_view(), name='product_delete'),
 
     path('merchtypes/', adminapp.MerchTypesListView.as_view(), name='merch_types'),
-    path('merchtypes/create', adminapp.MerchTypeCreateView.as_view(), name='merch_type_create'),
+    path('merchtypes/create/', adminapp.MerchTypeCreateView.as_view(), name='merch_type_create'),
     path('merchtypes/edit/<int:pk>/', adminapp.MerchTypeEditView.as_view(), name='merch_type_edit'),
     path('merchtypes/delete/<int:pk>/', adminapp.MerchTypeDeleteView.as_view(), name='merch_type_delete'),
+
+    path('orders/', adminapp.OrdersListView.as_view(), name='orders'),
+    path('orders/create/', adminapp.OrderCreateView.as_view(), name='order_create'),
+    path('orders/<int:pk>/', adminapp.OrderDetailView.as_view(), name='order_detail'),
+    path('orders/edit/<int:pk>/', adminapp.OrderUpdateView.as_view(), name='order_update'),
+    path('orders/delete/<int:pk>/', adminapp.OrderDeleteView.as_view(), name='order_delete'),
+
 ]

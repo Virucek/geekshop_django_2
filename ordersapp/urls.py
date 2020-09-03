@@ -12,4 +12,5 @@ urlpatterns = [
     re_path(r'^delete/(?P<pk>\d+)$', ordersapp.OrderDelete.as_view(), name='order_delete'),
 
     path('complete/forming/<int:pk>', ordersapp.order_forming_complete, name='order_forming_complete'),
+    path('update/<int:pk>/status/', ordersapp.order_forming_complete, name='order_forming_complete'),
 ]

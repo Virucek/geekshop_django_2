@@ -1,0 +1,18 @@
+{% load custom_tags %}
+
+{% if object %}
+    <div class="h2">Заказ №{{ object.pk }} от {{ object.created_at|curr_datetime }}</div>
+    <hr>
+    {% if object.user.last_name or object.user.first_name %}
+        <div class="h4">Заказчик: {{ object.user.first_name }} {{ object.user.last_name }}</div>
+    {% endif %}
+    <div class="h4">обновлен: {{ object.created_at|date:"Y-m-d H:i:s" }}</div>
+    <div class="h4">статус: {{ object.get_status_display }}</div>
+    <hr>
+    <div class="h3">Полная стоимость: {{object.total_price}} руб </div>
+{% else %}
+    <div class="h2">Новый заказ</div>
+    <hr>
+    <div class="h3">Полная стоимость: {{object.total_price}} руб </div>
+{% endif %}
+<hr>

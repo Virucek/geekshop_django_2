@@ -1,0 +1,20 @@
+{% extends 'ordersapp/base.html' %}
+{% load static %}
+
+{% block content %}
+   <div class="category_delete">
+       <div class="h1">Уверены, что хотите удалить?</div>
+       {% include 'adminapp/includes/inc_admin_order.html' %}
+        <form action="{% url 'admin:order_delete' object.pk %}" method="post">
+            {% csrf_token %}
+            {% if object.is_active %}
+                <input class="btn btn-danger" type="submit" value="удалить">
+            {%else%}
+                <input class="btn btn-primary" type="submit" value="восстановить">
+            {% endif %}
+        </form>
+        <a href="{% url 'admin:orders' %}">
+            <button class="btn btn-success">отмена</button>
+        </a>
+   </div>
+{% endblock %}
