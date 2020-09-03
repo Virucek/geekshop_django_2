@@ -56,6 +56,7 @@ class Order(models.Model):
             item.product.save()
 
         self.is_active = False
+        self.status = self.CANCEL_BY_CUSTOMER
         self.save()
 
 
