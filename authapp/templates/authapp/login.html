@@ -22,6 +22,15 @@
           <a class="btn btn-lg btn-primary btn-block" href="{% url 'auth:register' %}">
               Зарегистрироваться
           </a>
+          <a class="btn btn-lg btn-primary btn-block" href="{% url 'social:begin' 'vk-oauth2' %}?next=/">
+              Войти через Вконтакте
+          </a>
+          <a class="btn btn-lg btn-primary btn-block" href="{% url 'social:begin' 'facebook' %}?next=/">
+              Войти через Facebook
+          </a>
+          <a class="btn btn-lg btn-primary btn-block" href="{% url 'social:begin' 'google-oauth2' %}?next=/">
+              Войти через Google
+          </a>
         <br>
         <p class="mt-5 mb-3 text-muted">&copy; {% now "Y" %}</p>
     </form>
