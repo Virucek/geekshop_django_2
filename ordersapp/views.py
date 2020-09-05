@@ -1,13 +1,49 @@
+import requests
 from django.db import transaction
+from django.db.models.signals import pre_save, pre_delete
+from django.dispatch import receiver
 from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy, reverse
+from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
 from basketapp.models import Basket
 from ordersapp.forms import OrderItemForm
 from ordersapp.models import Order, OrderItem
+
+URL_CHECK_FAILED = 'orders:orders_list'
+
+
+def required_status(statuses):
+    def decorator(function):
+        def wrapper(_self, *args, **kwargs):
+            # print(kwargs)
+            # print(f'request {request.__dict__}')
+            # if kwargs:
+            #     _object = Order.objects.filter(pk=kwargs['pk']).first()
+            _object = _self.get_object()
+            if _object:
+                if _object.status in statuses:
+                    return function(_self, *args, **kwargs)
+                else:
+                    return HttpResponseRedirect(reverse(URL_CHECK_FAILED))
+        return wrapper
+    return decorator
+
+
+def correct_user(function):
+    def wrapper(_self, *args, **kwargs):
+        if _self.request.user:
+            # _object = Order.objects.filter(pk=kwargs['pk']).first()
+            _object = _self.get_object()
+            if _object:
+                if _object.user == _self.request.user:
+                    return function(_self, *args, **kwargs)
+                else:
+                    return HttpResponseRedirect(reverse(URL_CHECK_FAILED))
+    return wrapper
 
 
 class OrderList(ListView):
@@ -37,6 +73,7 @@ class OrderCreate(CreateView):
                 for num, form in enumerate(formset.forms):
                     form.initial['product'] = basket_items[num].product
                     form.initial['quantity'] = basket_items[num].quantity
+                    form.initial['price'] = basket_items[num].price
             else:
                 formset = OrderFormSet()
 
@@ -66,6 +103,12 @@ class OrderEdit(UpdateView):
     fields = []
     success_url = reverse_lazy('orders:orders_list')
 
+    # @method_decorator(correct_user)
+    @correct_user
+    @required_status(statuses=(Order.FORMING,))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
     def get_context_data(self, **kwargs):
         data = super(OrderEdit, self).get_context_data(**kwargs)
         OrderFormSet = inlineformset_factory(Order, OrderItem, OrderItemForm, extra=1)
@@ -73,7 +116,10 @@ class OrderEdit(UpdateView):
             formset = OrderFormSet(self.request.POST, instance=self.object)
         else:
             formset = OrderFormSet(instance=self.object)
-        
+            for form in formset:
+                if form.instance.pk:
+                    form.initial['price'] = form.instance.product.price
+
         data['orderitems'] = formset
         return data
     
@@ -91,7 +137,14 @@ class OrderEdit(UpdateView):
 
 class OrderDelete(DeleteView):
     model = Order
-    success_url = reverse_lazy('orders:orders_list')\
+    success_url = reverse_lazy('orders:orders_list')
+
+    # @method_decorator(correct_user)
+    # @method_decorator(required_status(statuses=(Order.FORMING,)))
+    @correct_user
+    @required_status((Order.FORMING,))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
 
 def order_forming_complete(request, pk):
@@ -100,3 +153,22 @@ def order_forming_complete(request, pk):
     order.save()
 
     return HttpResponseRedirect(reverse('orders:orders_list'))
+
+
+@receiver(pre_save, sender=OrderItem)
+@receiver(pre_save, sender=Basket)
+def product_quantity_update_save(sender, update_fields, instance, **kwargs):
+    # print(f'update_fields -- {update_fields}')
+    # if update_fields is 'products' or 'quantity':
+    if instance.pk:
+        instance.product.quantity -= instance.quantity - sender.get_item(instance.pk).quantity
+    else:
+        instance.product.quantity -= instance.quantity
+    instance.product.save()
+
+
+@receiver(pre_delete, sender=OrderItem)
+@receiver(pre_delete, sender=Basket)
+def product_quantity_delete(sender, instance, **kwargs):
+    instance.product.quantity += instance.quantity
+    instance.product.save()

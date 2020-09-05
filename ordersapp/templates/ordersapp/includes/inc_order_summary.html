@@ -7,13 +7,25 @@
     <div class="h4">обновлен: {{ object.created_at|date:"Y-m-d H:i:s" }}</div>
     <div class="h4">статус: {{ object.get_status_display }}</div>
     <hr>
-    <div class="h3">Полная стоимость: {{object.total_price}} руб </div>
+    <div class="h3">Количество товаров:
+        <span class="order_total_quantity">
+            {{object.total_quantity}}
+        </span> шт.
+    </div>
+    <div class="h3">Полная стоимость:
+        <span class="order_total_price">
+            {{object.total_price}}
+        </span> руб.
+    </div>
 {% else %}
     <div class="h2">Новый заказ</div>
     {% if user.last_name or user.first_name %}
         <div class="h4">Заказчик: {{ user.first_name }} {{ user.last_name }}</div>
     {% endif %}
     <hr>
-    <div class="h3">Полная стоимость: {{object.total_price}} руб </div>
+    <div class="h3">Количество товаров:
+        <span class="order_total_quantity"></span> шт. </div>
+    <div class="h3">Полная стоимость:
+        <span class="order_total_price"></span> руб. </div>
 {% endif %}
 <hr>

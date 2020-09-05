@@ -50,14 +50,23 @@ class Order(models.Model):
 
     total_price = property(total_price)
 
-    def delete(self):
-        for item in self.orderitems.select_related():
-            item.product.quantity += item.quantity
-            item.product.save()
+    # def delete(self):
+    #     for item in self.orderitems.select_related():
+    #         item.product.quantity += item.quantity
+    #         item.product.save()
+    #
+    #     self.is_active = False
+    #     self.status = self.CANCEL_BY_CUSTOMER
+    #     self.save()
 
-        self.is_active = False
-        self.status = self.CANCEL_BY_CUSTOMER
-        self.save()
+
+# class OrderItemQuerySet(models.QuerySet):
+#
+#     def delete(self):
+#         for item in self:
+#             item.product.quantity += item.quantity
+#             item.product.save()
+#         super(OrderItemQuerySet, self).delete()
 
 
 class OrderItem(models.Model):
@@ -65,6 +74,24 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, verbose_name='продукт', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(verbose_name='количество', default=0)
 
+    # objects = OrderItemQuerySet.as_manager()
+
+    def get_item(pk):
+        return OrderItem.objects.filter(pk=pk).first()
+
     @property
     def product_price(self):
         return self.product.price * self.quantity
+
+    # def delete(self):
+    #     self.product.quantity += self.quantity
+    #     self.product.save()
+    #     super(OrderItem, self).delete()
+    #
+    # def save(self):
+    #     if self.pk:
+    #         self.product.quantity -= self.quantity - OrderItem.get_item(self.pk).quantity
+    #     else:
+    #         self.product.quantity -= self.quantity
+    #     self.product.save()
+    #     super(OrderItem, self).save()
