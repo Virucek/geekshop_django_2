@@ -50,14 +50,14 @@ class Order(models.Model):
 
     total_price = property(total_price)
 
-    # def delete(self):
-    #     for item in self.orderitems.select_related():
-    #         item.product.quantity += item.quantity
-    #         item.product.save()
-    #
-    #     self.is_active = False
-    #     self.status = self.CANCEL_BY_CUSTOMER
-    #     self.save()
+    def delete(self):
+        for item in self.orderitems.select_related():
+            item.product.quantity += item.quantity
+            item.product.save()
+
+        self.is_active = False
+        self.status = self.CANCEL_BY_CUSTOMER
+        self.save()
 
 
 # class OrderItemQuerySet(models.QuerySet):
