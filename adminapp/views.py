@@ -1,5 +1,7 @@
 from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db import transaction
+from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -11,6 +13,8 @@ from adminapp.forms import ShopUserAdminEditForm, ProductCategoryAdminEditForm, 
 from authapp.forms import ShopUserRegisterForm
 from authapp.models import ShopUser
 from mainapp.models import ProductCategory, Product, MerchType
+from ordersapp.forms import OrderItemForm
+from ordersapp.models import Order, OrderItem
 
 
 class ClassBasedViewMixin:
@@ -201,3 +205,101 @@ class MerchTypeDeleteView(ClassBasedViewMixin, DeleteView):
     template_name = 'adminapp/merch_type_delete.html'
     success_url = reverse_lazy('admin:merch_types')
     title = 'типы мерча / удаление'
+
+
+class OrdersListView(ClassBasedViewMixin, ListView):
+    model = Order
+    title = 'админка / заказы'
+    template_name = 'adminapp/orders.html'
+
+
+class OrderCreateView(ClassBasedViewMixin, CreateView):
+    model = Order
+    title = 'заказы / создание'
+    fields = ['user', 'status']
+    template_name = 'adminapp/order_update.html'
+    success_url = reverse_lazy('admin:orders')
+
+    def get_context_data(self, **kwargs):
+        data = super(OrderCreateView, self).get_context_data(**kwargs)
+        OrderFormSet = inlineformset_factory(Order, OrderItem, OrderItemForm, extra=1)
+
+        if self.request.POST:
+            formset = OrderFormSet(self.request.POST)
+        else:
+            formset = OrderFormSet()
+
+        data['orderitems'] = formset
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        orderitems = context['orderitems']
+        with transaction.atomic():
+            self.object = form.save()
+            if orderitems.is_valid():
+                orderitems.instance = self.object
+                orderitems.save()
+
+        return super(OrderCreateView, self).form_valid(form)
+
+
+class OrderDetailView(ClassBasedViewMixin, DetailView):
+    model = Order
+    template_name = 'adminapp/order.html'
+    title = 'заказы / подробнее'
+
+
+class OrderUpdateView(ClassBasedViewMixin, UpdateView):
+    model = Order
+    title = 'заказы / редактирование'
+    fields = ['status']
+    template_name = 'adminapp/order_update.html'
+    success_url = reverse_lazy('admin:orders')
+
+    def get_context_data(self, **kwargs):
+        data = super(OrderUpdateView, self).get_context_data(**kwargs)
+        OrderFormSet = inlineformset_factory(Order, OrderItem, OrderItemForm, extra=1)
+
+        if self.request.POST:
+            formset = OrderFormSet(self.request.POST, instance=self.object)
+        else:
+            formset = OrderFormSet(instance=self.object)
+
+        data['orderitems'] = formset
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        orderitems = context['orderitems']
+        with transaction.atomic():
+            self.object = form.save()
+            if orderitems.is_valid():
+                orderitems.instance = self.object
+                orderitems.save()
+
+        return super(OrderUpdateView, self).form_valid(form)
+
+
+class OrderDeleteView(ClassBasedViewMixin, DeleteView):
+    model = Order
+    title = 'заказы / удаление'
+    template_name = 'adminapp/order_delete.html'
+    success_url = reverse_lazy('admin:orders')
+
+# если заказ удаляется, ему присваивается статус "отменен"
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.is_active:
+            self.object.is_active = False
+            self.object.status = Order.REFUSED
+        else:
+            self.object.is_active = True
+            self.object.status = Order.FORMING
+        self.object.save()
+
+        return HttpResponseRedirect(self.get_success_url())
+
+
+def change_order_status(request, pk):
+    pass

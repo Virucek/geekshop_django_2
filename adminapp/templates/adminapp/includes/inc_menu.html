@@ -17,4 +17,10 @@
             типы мерча
         </a>
     </li>
+    <li>
+        <a href="{% url 'admin:orders' %}"
+        class="{% if request.resolver_match.url_name == 'orders' or orders.name %}active{% endif %}">
+            заказы
+        </a>
+    </li>
 </ul>

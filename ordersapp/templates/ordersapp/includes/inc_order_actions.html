@@ -1,0 +1,29 @@
+{% if object.status == 'FM' %}
+    <button class="btn btn-warning btn-round form-control last">
+        <a href="{% url 'orders:order_forming_complete' object.pk %}">
+            совершить покупку
+        </a>
+    </button>
+    {% if request.resolver_match.url_name != 'order_update' %}
+        <button class="btn btn-warning btn-round form-control last">
+            <a href="{% url 'orders:order_update' object.pk %}">
+                редактировать
+            </a>
+        </button>
+    {% endif %}
+    <button class="btn btn-warning btn-round form-control last">
+        <a href="{% url 'orders:order_delete' object.pk %}">
+            удалить
+        </a>
+    </button>
+{% endif %}
+<button class="btn btn-warning btn-round form-control last">
+        <a href="{% url 'orders:orders_list' %}">
+             к списку заказов
+        </a>
+</button>
+<button class="btn btn-warning btn-round form-control last">
+        <a href="{% url 'main' %}">
+             на главную
+        </a>
+</button>

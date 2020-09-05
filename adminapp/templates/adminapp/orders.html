@@ -1,0 +1,40 @@
+{% extends 'adminapp/base.html' %}
+{% load static %}
+{% load custom_tags %}
+
+{% block content %}
+    <div class="categories_list">
+        <a href="{% url 'admin:order_create' %}">
+            <button class="new_category">новый заказ</button>
+        </a>
+
+        {% for object in object_list %}
+            <div class="category_record {% if not object.is_active %}not_active{% endif %}">
+                <div class="category_name">
+                    № {{ object.pk }}
+                </div>
+                <div class="category_actions">
+                    <a href="{% url 'admin:order_detail' object.pk %}">
+                        <button>подробности</button>
+                    </a>
+                    <a href="{% url 'admin:order_update' object.pk %}">
+                        <button>редактировать</button>
+                    </a>
+                    <a href="{% url 'admin:order_delete' object.pk %}">
+                        <button>
+                        {% if object.is_active %}удалить
+                        {% else %}восстановить
+                        {% endif %}
+                        </button>
+                    </a>
+                </div>
+                <div class="category_desc">
+                    Пользователь: {{ object.user.username }} {{ object.user.first_name }} {{ object.user.last_name }} <br/>
+                    Создан: {{ object.created_at|curr_datetime }} <br/>
+                    Обновлен: {{ object.updated_at|curr_datetime }} <br/>
+                    Статус: {{ object.get_status_display }} <br/>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
