@@ -17,6 +17,20 @@ from ordersapp.forms import OrderItemForm
 from ordersapp.models import Order, OrderItem
 
 
+DISABLED_ORDER_STATUSES = (
+    Order.READY,
+    Order.CANCEL_BY_CUSTOMER,
+    Order.REFUSED,
+)
+
+STATUS_ORDER_BUTTONS = (
+    (Order.FORMING, 'Отправить в обработку'),
+    (Order.SENT_TO_PROCEED, 'Обработать'),
+    (Order.PROCEED, 'Оплатить'),
+    (Order.PAID, 'Готов'),
+)
+
+
 class ClassBasedViewMixin:
 
     def get_context_data(self, **kwargs):
@@ -211,6 +225,7 @@ class OrdersListView(ClassBasedViewMixin, ListView):
     model = Order
     title = 'админка / заказы'
     template_name = 'adminapp/orders.html'
+    extra_context = {'DISABLED_ORDER_STATUSES': DISABLED_ORDER_STATUSES, 'STATUS_ORDER_BUTTONS': STATUS_ORDER_BUTTONS}
 
 
 class OrderCreateView(ClassBasedViewMixin, CreateView):
@@ -248,6 +263,7 @@ class OrderDetailView(ClassBasedViewMixin, DetailView):
     model = Order
     template_name = 'adminapp/order.html'
     title = 'заказы / подробнее'
+    extra_context = {'DISABLED_ORDER_STATUSES': DISABLED_ORDER_STATUSES, 'STATUS_ORDER_BUTTONS': STATUS_ORDER_BUTTONS}
 
 
 class OrderUpdateView(ClassBasedViewMixin, UpdateView):
@@ -301,5 +317,26 @@ class OrderDeleteView(ClassBasedViewMixin, DeleteView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-def change_order_status(request, pk):
-    pass
+@user_passes_test(lambda u: u.is_superuser)
+def order_status_next(request, pk):
+    object = get_object_or_404(Order, pk=pk)
+    statuses = Order.ORDER_STATUS_CHOISES
+    if object.status in DISABLED_ORDER_STATUSES:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    for i in range(len(statuses)):
+        print(object.status, i, len(statuses))
+        if object.status == statuses[i][0]:
+            object.status = statuses[i + 1][0]
+            object.save()
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def order_cancel_customer(request, pk):
+    object = get_object_or_404(Order, pk=pk)
+    if object.status in DISABLED_ORDER_STATUSES:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    object.status = Order.CANCEL_BY_CUSTOMER
+    object.is_active = False
+    object.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

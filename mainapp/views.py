@@ -2,6 +2,7 @@
 import random
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 import os
 import json
@@ -80,3 +81,10 @@ def detail(request, pk):
         'same_products': get_same_products(product),
     }
     return render(request, f'mainapp/product_detail.html', context=content)
+
+
+def get_product_price(request, pk):
+    if request.is_ajax():
+        product = Product.objects.get(pk=int(pk))
+        return JsonResponse({'price': product.price})
+

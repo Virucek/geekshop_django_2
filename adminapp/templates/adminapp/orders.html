@@ -34,6 +34,20 @@
                     Обновлен: {{ object.updated_at|curr_datetime }} <br/>
                     Статус: {{ object.get_status_display }} <br/>
                 </div>
+                <div class="category_actions">
+                    {% if object.status not in DISABLED_ORDER_STATUSES %}
+                    <a href="{% url 'admin:order_status_next' object.pk %}">
+                        {% for button in STATUS_ORDER_BUTTONS %}
+                            {% if object.status == button.0 %}
+                                <button>{{ button.1 }}</button>
+                            {% endif %}
+                        {% endfor %}
+                    </a>
+                    <a href="{% url 'admin:order_cancel_customer' object.pk %}">
+                        <button>отменить</button>
+                    </a>
+                    {% endif %}
+                </div>
             </div>
         {% endfor %}
     </div>

@@ -131,6 +131,7 @@ body form {
     position: relative;
 }
 
+.order_deleted,
 .product_record.not_active {
     opacity: 0.5;
 }
