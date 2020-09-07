@@ -1,7 +1,9 @@
 window.onload = function() {
-    var _quantity, _price, orderitem_num, delta_quantity, orderitem_quantity, delta_price, prev_price, prev_orderitem_num;
+    var _quantity, _price, orderitem_num, delta_quantity, orderitem_quantity, delta_price, prev_price, prev_orderitem_num, _quantity_rest;
+    var _quantity_rest_str, _price_str;
     var quantity_arr = [];
     var price_arr = [];
+    var quantity_rest_arr = [];
 
     var TOTAL_FORMS = parseInt($('input[name="orderitems-TOTAL_FORMS"]').val());
 
@@ -10,10 +12,12 @@ window.onload = function() {
 
     for(var i = 0; i < TOTAL_FORMS; i++){
         _quantity = parseInt($('input[name="orderitems-' + i + '-quantity"]').val());
-        _price = parseFloat($('.orderitems-' + i + '-price').text().replace(',', '.'));
+        _price = parseFloat($('.orderitems-' + i + '-price').text().replace(',', '.').replace(' руб.', ''));
+        _quantity_rest = parseInt($('.orderitems-' + i + '-quantity_rest').text().replace(' шт.', ''));
 
         quantity_arr[i] = _quantity;
-        price_arr[i] = _price ? _price : 0
+        price_arr[i] = _price ? _price : 0;
+        quantity_rest_arr[i] = _quantity_rest ? _quantity_rest : 0;
     }
 
     if (!order_total_quantity){
@@ -32,6 +36,10 @@ window.onload = function() {
             delta_quantity = orderitem_quantity - quantity_arr[orderitem_num];
             quantity_arr[orderitem_num] = orderitem_quantity;
             orderSummaryUpdate(price_arr[orderitem_num], delta_quantity);
+
+            quantity_rest_arr[orderitem_num] -= delta_quantity;
+            _quantity_rest_str = quantity_rest_arr[orderitem_num].toString() + ' шт.'
+            $('.orderitems-'+orderitem_num+'-quantity_rest').html(_quantity_rest_str);
          }
     });
 //    $('.order_form').on('click', 'input[type="checkbox"]', function() {
@@ -79,11 +87,15 @@ window.onload = function() {
 
 //        let target_column = row[0].querySelector('.td3');
 //        $('<span class="orderitems-'+orderitem_num+'-price"></span>').appendTo(target_column);
-        let target_column = row[0].querySelector('.td3 > span');
-        target_column.className = 'orderitems-'+orderitem_num+'-price';
+        let target_price = row[0].querySelector('.td3 > span');
+        target_price.className = 'orderitems-'+orderitem_num+'-price';
+
+        let target_quantity_rest = row[0].querySelector('.td4 > span');
+        target_quantity_rest.className = 'orderitems-'+orderitem_num+'-quantity_rest';
 
         price_arr[orderitem_num] = 0;
         quantity_arr[orderitem_num] = 0;
+        quantity_rest_arr[orderitem_num] = 0;
 
         let target_input = $('#id_orderitems-'+orderitem_num+'-quantity')
         target_input.val(0);
@@ -95,6 +107,12 @@ window.onload = function() {
         prefix: 'orderitems',
         removed: deleteOrderItem,
         added: addOrderItem
+    });
+
+    $('.order_form input[type="number"]').each(function(orderitem_num) {
+        if (price_arr[orderitem_num]) {
+            $( this ).attr({"max": (quantity_rest_arr[orderitem_num] + quantity_arr[orderitem_num]).toString()});
+        }
     });
 
     $('.order_form').on('click', 'select', function() {
@@ -111,15 +129,20 @@ window.onload = function() {
 
         if (target) {
              $.ajax({
-                url: "/catalog/product/" + target.value + "/price/",
+                url: "/orders/product/" + target.value + "/price/quantity/",
 
                 success: function (data) {
                     orderitem_num = parseInt(target.name.replace('orderitems-', '').replace('-product', ''));
                     if (orderitem_num == prev_orderitem_num){
-                        _price = (Number(data.price).toFixed(2)).toString() + " руб.";
-                        $('.orderitems-'+orderitem_num+'-price').html(_price);
+                        _price_str = (Number(data.price).toFixed(2)).toString() + " руб.";
+                        $('.orderitems-'+orderitem_num+'-price').html(_price_str);
                         price_arr[orderitem_num] = Number(data.price).toFixed(2);
                         orderProductUpdate(prev_price, price_arr[orderitem_num], quantity_arr[orderitem_num]);
+
+                        quantity_rest_arr[orderitem_num] = Number(data.quantity);
+                        _quantity_rest_str = (data.quantity).toString() + " шт.";
+                        $('.orderitems-'+orderitem_num+'-quantity_rest').html(_quantity_rest_str);
+                        $('#id_orderitems-'+orderitem_num+'-quantity').attr({"max": (quantity_rest_arr[orderitem_num] + quantity_arr[orderitem_num]).toString()});
                     }
                 },
              });

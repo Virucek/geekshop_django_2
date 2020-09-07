@@ -18,7 +18,7 @@
             <p>Полное описание:</p>
             <p>{{ object.full_desc }}</p>
             <p>Цена: {{ object.price }}</p>
-            <p>Количество: {{ object.quantity }}</p>
+            <p>Количество на складе: {{ object.quantity }}</p>
             <p>Активный: {% if object.is_active %}да{% else %}нет{% endif %}</p>
             <p>
                 <a href="{% url 'admin:product_edit' object.pk %}">

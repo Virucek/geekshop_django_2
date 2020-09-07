@@ -16,6 +16,7 @@ class OrderForm(forms.ModelForm):
 
 class OrderItemForm(forms.ModelForm):
     price = forms.CharField(label='Цена', required=False)
+    quantity_rest = forms.CharField(label='Кол-во на складе', required=False)
 
     class Meta:
         model = OrderItem
@@ -25,3 +26,10 @@ class OrderItemForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+
+    # def clean_quantity(self):
+    #     data = self.cleaned_data['quantity']
+    #     if data > (self.instance.product.quantity + self.instance.quantity):
+    #         raise forms.ValidationError('Товаров на складе не осталось')
+    #
+    #     return data

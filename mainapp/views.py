@@ -18,7 +18,7 @@ def get_same_products(product):
 
 
 def get_hot_product():
-    products = Product.objects.filter(category__is_active=True, is_active=True)
+    products = Product.objects.filter(category__is_active=True, is_active=True, quantity__gt=0)
     return random.sample(list(products), 1)[0]
 
 
@@ -81,10 +81,3 @@ def detail(request, pk):
         'same_products': get_same_products(product),
     }
     return render(request, f'mainapp/product_detail.html', context=content)
-
-
-def get_product_price(request, pk):
-    if request.is_ajax():
-        product = Product.objects.get(pk=int(pk))
-        return JsonResponse({'price': product.price})
-

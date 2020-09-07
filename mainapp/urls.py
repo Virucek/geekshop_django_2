@@ -13,5 +13,4 @@ urlpatterns = [
     path('product/<int:pk>/', mainapp.detail, name='product'),
 
     # re_path(r'^product/(P<pk>\d+)/price/$', mainapp.get_product_price, name='product_price'),
-    path('product/<int:pk>/price/', mainapp.get_product_price, name='product_price'),
 ]
