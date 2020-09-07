@@ -42,11 +42,9 @@
                                     </span>
                                {% elif field.name == 'quantity_rest' %}
                                     <span class="orderitems-{{forloop.parentloop.counter0}}-quantity_rest">
-                                    {% if field.value %}
 
-                                        {{ field.value }} шт.
+                                        {{ field.value|default:0 }} шт.
 
-                                    {% endif %}
                                     </span>
                                {% endif %}
 
