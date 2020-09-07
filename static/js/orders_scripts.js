@@ -57,7 +57,7 @@ window.onload = function() {
         $('.order_total_quantity').html(order_total_quantity.toString());
         $('.order_total_price').html(order_total_price.toString());
     };
-
+// при обновлении продукта (поле select) пересчитаем общую сумму (количество не меняется)
     function orderProductUpdate(from_price, to_price, quantity) {
         console.log("order_total_price  " + order_total_price);
         if (quantity) {
@@ -80,19 +80,21 @@ window.onload = function() {
 //        row[0].className += ' order_deleted';
 
     }
-
+// функция, срабатывающая при добавлении новой строки
     function addOrderItem(row) {
         let target_row = row[0].querySelector('input[type="number"]').name;
         orderitem_num = parseInt(target_row.replace('orderitems-', '').replace('-DELETE', ''));
 
 //        let target_column = row[0].querySelector('.td3');
 //        $('<span class="orderitems-'+orderitem_num+'-price"></span>').appendTo(target_column);
+
+// т.к. цене и количеству нового продукта классы присваиваются некорректные, проапдейтим до корректного orderitems-num
         let target_price = row[0].querySelector('.td3 > span');
         target_price.className = 'orderitems-'+orderitem_num+'-price';
 
         let target_quantity_rest = row[0].querySelector('.td4 > span');
         target_quantity_rest.className = 'orderitems-'+orderitem_num+'-quantity_rest';
-
+// добавим в массивы значения для нового продукта
         price_arr[orderitem_num] = 0;
         quantity_arr[orderitem_num] = 0;
         quantity_rest_arr[orderitem_num] = 0;
@@ -108,22 +110,14 @@ window.onload = function() {
         removed: deleteOrderItem,
         added: addOrderItem
     });
-
+    // функция, присваивающая аттрибут максимум для всех input количеств товара в заказе
     $('.order_form input[type="number"]').each(function(orderitem_num) {
         if (price_arr[orderitem_num]) {
             $( this ).attr({"max": (quantity_rest_arr[orderitem_num] + quantity_arr[orderitem_num]).toString()});
         }
     });
 
-    $('.order_form').on('click', 'select', function() {
-        let target = event.target;
-        prev_orderitem_num = parseInt(target.name.replace('orderitems-', '').replace('-product', ''));
-        if (!price_arr[prev_orderitem_num]) {
-            price_arr[prev_orderitem_num] = 0;
-        }
-        prev_price = price_arr[prev_orderitem_num];
-    });
-
+    // При изменении продукта, необходимо перезапросить его сумму и остаток на складе и пересчитать общие значения
     $('.order_form').on('change', 'select', function() {
         let target = event.target;
 
@@ -133,17 +127,19 @@ window.onload = function() {
 
                 success: function (data) {
                     orderitem_num = parseInt(target.name.replace('orderitems-', '').replace('-product', ''));
-                    if (orderitem_num == prev_orderitem_num){
-                        _price_str = (Number(data.price).toFixed(2)).toString() + " руб.";
-                        $('.orderitems-'+orderitem_num+'-price').html(_price_str);
-                        price_arr[orderitem_num] = Number(data.price).toFixed(2);
-                        orderProductUpdate(prev_price, price_arr[orderitem_num], quantity_arr[orderitem_num]);
-
-                        quantity_rest_arr[orderitem_num] = Number(data.quantity);
-                        _quantity_rest_str = (data.quantity).toString() + " шт.";
-                        $('.orderitems-'+orderitem_num+'-quantity_rest').html(_quantity_rest_str);
-                        $('#id_orderitems-'+orderitem_num+'-quantity').attr({"max": (quantity_rest_arr[orderitem_num] + quantity_arr[orderitem_num]).toString()});
+                    if (!price_arr[orderitem_num]){
+                        price_arr[orderitem_num] = 0;
                     }
+                    _price_str = (Number(data.price).toFixed(2)).toString() + " руб.";
+                    $('.orderitems-'+orderitem_num+'-price').html(_price_str);
+
+                    orderProductUpdate(price_arr[orderitem_num], Number(data.price).toFixed(2), quantity_arr[orderitem_num]);
+                    price_arr[orderitem_num] = Number(data.price).toFixed(2);
+
+                    quantity_rest_arr[orderitem_num] = Number(data.quantity);
+                    _quantity_rest_str = (data.quantity).toString() + " шт.";
+                    $('.orderitems-'+orderitem_num+'-quantity_rest').html(_quantity_rest_str);
+                    $('#id_orderitems-'+orderitem_num+'-quantity').attr({"max": (quantity_rest_arr[orderitem_num] + quantity_arr[orderitem_num]).toString()});
                 },
              });
          }

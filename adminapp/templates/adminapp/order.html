@@ -42,7 +42,7 @@
                </button>
            </a>
        </p>
-       {% if object.status not in DISABLED_ORDER_STATUSES %}
+       {% if object.status not in FINAL_ORDER_STATUSES %}
         <p>
             <a href="{% url 'admin:order_status_next' object.pk %}">
             {% for button in STATUS_ORDER_BUTTONS %}

@@ -16,13 +16,13 @@ from mainapp.models import ProductCategory, Product, MerchType
 from ordersapp.forms import OrderItemForm
 from ordersapp.models import Order, OrderItem
 
-
-DISABLED_ORDER_STATUSES = (
+# список финальных статусов заказа, при которых его нельзя изменить или отменить
+FINAL_ORDER_STATUSES = (
     Order.READY,
     Order.CANCEL_BY_CUSTOMER,
     Order.REFUSED,
 )
-
+# список названий кнопок для перехода по статусам. (для шаблона)
 STATUS_ORDER_BUTTONS = (
     (Order.FORMING, 'Отправить в обработку'),
     (Order.SENT_TO_PROCEED, 'Обработать'),
@@ -321,7 +321,7 @@ class OrderDeleteView(ClassBasedViewMixin, DeleteView):
 def order_status_next(request, pk):
     object = get_object_or_404(Order, pk=pk)
     statuses = Order.ORDER_STATUS_CHOISES
-    if object.status in DISABLED_ORDER_STATUSES:
+    if object.status in FINAL_ORDER_STATUSES:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     for i in range(len(statuses)):
         print(object.status, i, len(statuses))
@@ -334,7 +334,7 @@ def order_status_next(request, pk):
 @user_passes_test(lambda u: u.is_superuser)
 def order_cancel_customer(request, pk):
     object = get_object_or_404(Order, pk=pk)
-    if object.status in DISABLED_ORDER_STATUSES:
+    if object.status in FINAL_ORDER_STATUSES:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     object.status = Order.CANCEL_BY_CUSTOMER
     object.is_active = False
