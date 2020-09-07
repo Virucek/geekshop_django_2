@@ -225,7 +225,7 @@ class OrdersListView(ClassBasedViewMixin, ListView):
     model = Order
     title = 'админка / заказы'
     template_name = 'adminapp/orders.html'
-    extra_context = {'DISABLED_ORDER_STATUSES': DISABLED_ORDER_STATUSES, 'STATUS_ORDER_BUTTONS': STATUS_ORDER_BUTTONS}
+    extra_context = {'FINAL_ORDER_STATUSES': FINAL_ORDER_STATUSES, 'STATUS_ORDER_BUTTONS': STATUS_ORDER_BUTTONS}
 
 
 class OrderCreateView(ClassBasedViewMixin, CreateView):
@@ -263,7 +263,7 @@ class OrderDetailView(ClassBasedViewMixin, DetailView):
     model = Order
     template_name = 'adminapp/order.html'
     title = 'заказы / подробнее'
-    extra_context = {'DISABLED_ORDER_STATUSES': DISABLED_ORDER_STATUSES, 'STATUS_ORDER_BUTTONS': STATUS_ORDER_BUTTONS}
+    extra_context = {'FINAL_ORDER_STATUSES': FINAL_ORDER_STATUSES, 'STATUS_ORDER_BUTTONS': STATUS_ORDER_BUTTONS}
 
 
 class OrderUpdateView(ClassBasedViewMixin, UpdateView):
