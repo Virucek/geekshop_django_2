@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 import adminapp.views as adminapp
 
 app_name = 'adminapp'
@@ -32,5 +32,7 @@ urlpatterns = [
     path('orders/<int:pk>/', adminapp.OrderDetailView.as_view(), name='order_detail'),
     path('orders/edit/<int:pk>/', adminapp.OrderUpdateView.as_view(), name='order_update'),
     path('orders/delete/<int:pk>/', adminapp.OrderDeleteView.as_view(), name='order_delete'),
+    re_path(r'^orders/(?P<pk>\d+)/status/next/$', adminapp.order_status_next, name='order_status_next'),
+    re_path(r'^orders/(?P<pk>\d+)/cancel/$', adminapp.order_cancel_customer, name='order_cancel_customer'),
 
 ]

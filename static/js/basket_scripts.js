@@ -36,6 +36,9 @@ window.onload = function () {
                 success: function (data) {
                     $('.basket_list').html(data.result_list);
                     $('.basket_footer').html(data.result_total);
+                    if(data.errorText){
+                        alert(data.errorText);
+                    }
                     console.log('ajax done');
                     console.log(data);
                 },

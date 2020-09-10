@@ -25,6 +25,8 @@ def basket_add(request, pk):
     print('11111111111111111')
     print('22222222222222222')
     product = get_object_or_404(Product, pk=pk)
+    if product.quantity == 0:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     basket = Basket.objects.filter(user=request.user, product=product).first()
 
@@ -55,12 +57,16 @@ def basket_edit(request, pk, quantity):
 
         quantity = int(quantity)
         basket = Basket.objects.get(pk=int(pk))
+        errorText = ''
 
-        if quantity > 0:
-            basket.quantity = quantity
-            basket.save()
+        if basket.product.quantity > 0 or quantity < basket.quantity:
+            if quantity > 0:
+                basket.quantity = quantity
+                basket.save()
+            else:
+                basket.delete()
         else:
-            basket.delete()
+            errorText = 'На складе не осталось данного товара'
 
         basket_items = Basket.objects.filter(user=request.user)
 
@@ -70,5 +76,11 @@ def basket_edit(request, pk, quantity):
 
         result_list = render_to_string('basketapp/includes/inc_basket_list.html', context=content)
         result_total = render_to_string('basketapp/includes/inc_basket_footer.html', context=content)
+        response_data = {
+            'result_list': result_list,
+            'result_total': result_total,
+        }
+        if errorText:
+            response_data.update({'errorText': errorText})
 
-        return JsonResponse({'result_list': result_list, 'result_total': result_total})
+        return JsonResponse(response_data)

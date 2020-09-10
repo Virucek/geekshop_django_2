@@ -18,8 +18,18 @@
 					{{ product.short_desc }}
                 </p>
 			</div>
+			{% if product.quantity %}
 			<input type="button" onclick="location.href='{% url 'basket:add' product.pk %}';" value="Купить">
+			{% endif %}
 		</div>
+		<h3>
+			Количество на складе:
+			{% if product.quantity %}
+			{{ product.quantity }}
+			{% else %}
+			Данный товар на складе отсутствует. В данный момент купить его не выйдет :(
+			{% endif %}
+		</h3>
 <!--		<h3>Технические характеристики товара</h3>-->
 <!--		<table class="tab_params">-->
 <!--            {% block tab_params %}-->

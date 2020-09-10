@@ -23,22 +23,31 @@
                    {% endif %}
                    <tr class="formset_row">
                        {% for field in form.visible_fields %}
-                           <td class="{% cycle 'td1' 'td2' 'td3' 'td4' %} order formset_td">
+                           <td class="{% cycle 'td1' 'td2' 'td3' 'td4' 'td5' %} order formset_td">
                                {% if forloop.first %}
                                    {% for hidden in form.hidden_fields %}
                                        {{ hidden }}
                                    {% endfor %}
                                {% endif %}
                                {{ field.errors.as_ul }}
-                               {% if field.name != 'price' %}
+                               {% if field.name != 'price' and field.name != 'quantity_rest' %}
                                     {{ field }}
-                               {% else %}
+                               {% elif field.name == 'price' %}
+                                    <span class="orderitems-{{forloop.parentloop.counter0}}-price">
                                     {% if field.value %}
-                                        <span class="orderitems-{{forloop.parentloop.counter0}}-price">
-                                            {{ field.value }}
-                                        </span> руб
+
+                                        {{ field.value }} руб.
+
                                     {% endif %}
+                                    </span>
+                               {% elif field.name == 'quantity_rest' %}
+                                    <span class="orderitems-{{forloop.parentloop.counter0}}-quantity_rest">
+
+                                        {{ field.value|default:0 }} шт.
+
+                                    </span>
                                {% endif %}
+
                            </td>
                        {% endfor %}
                    </tr>

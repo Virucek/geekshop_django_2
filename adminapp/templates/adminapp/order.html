@@ -42,6 +42,22 @@
                </button>
            </a>
        </p>
+       {% if object.status not in FINAL_ORDER_STATUSES %}
+        <p>
+            <a href="{% url 'admin:order_status_next' object.pk %}">
+            {% for button in STATUS_ORDER_BUTTONS %}
+                {% if object.status == button.0 %}
+                    <button>{{ button.1 }}</button>
+                {% endif %}
+            {% endfor %}
+            </a>
+        </p>
+        <p>
+            <a href="{% url 'admin:order_cancel_customer' object.pk %}">
+                <button>отменить</button>
+            </a>
+        </p>
+        {% endif %}
        <p>
            <a href="{% url 'admin:orders' %}">
                <button>

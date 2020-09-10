@@ -3,13 +3,14 @@ from django.db import transaction
 from django.db.models.signals import pre_save, pre_delete
 from django.dispatch import receiver
 from django.forms import inlineformset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
 from basketapp.models import Basket
+from mainapp.models import Product
 from ordersapp.forms import OrderItemForm
 from ordersapp.models import Order, OrderItem
 
@@ -73,7 +74,8 @@ class OrderCreate(CreateView):
                 for num, form in enumerate(formset.forms):
                     form.initial['product'] = basket_items[num].product
                     form.initial['quantity'] = basket_items[num].quantity
-                    form.initial['price'] = basket_items[num].price
+                    form.initial['price'] = basket_items[num].product.price
+                    form.initial['quantity_rest'] = basket_items[num].product.quantity
             else:
                 formset = OrderFormSet()
 
@@ -82,6 +84,7 @@ class OrderCreate(CreateView):
 
     def form_valid(self, form):
         context = self.get_context_data()
+        Basket.objects.filter(user=self.request.user).delete()
         orderitems = context['orderitems']
         with transaction.atomic():
             form.instance.user = self.request.user
@@ -89,7 +92,6 @@ class OrderCreate(CreateView):
             if orderitems.is_valid():
                 orderitems.instance = self.object
                 orderitems.save()
-        Basket.objects.filter(user=self.request.user).delete()
 
         return super(OrderCreate, self).form_valid(form)
 
@@ -119,6 +121,7 @@ class OrderEdit(UpdateView):
             for form in formset:
                 if form.instance.pk:
                     form.initial['price'] = form.instance.product.price
+                    form.initial['quantity_rest'] = form.instance.product.quantity
 
         data['orderitems'] = formset
         return data
@@ -172,3 +175,9 @@ def product_quantity_update_save(sender, update_fields, instance, **kwargs):
 def product_quantity_delete(sender, instance, **kwargs):
     instance.product.quantity += instance.quantity
     instance.product.save()
+
+
+def get_product_price_quantity(request, pk):
+    if request.is_ajax():
+        product = Product.objects.get(pk=int(pk))
+        return JsonResponse({'price': product.price, 'quantity': product.quantity})

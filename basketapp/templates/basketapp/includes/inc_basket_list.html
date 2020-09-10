@@ -14,7 +14,7 @@
 			</td>
 			<td> {{ prod.product.price }} </td>
 			<td data-th="Количество">
-				<input type="number" name="{{ prod.pk }}" class="form-control text-center" value="{{ prod.quantity }}">
+				<input type="number" name="{{ prod.pk }}" class="form-control text-center" value="{{ prod.quantity }}" max="{{ prod.quantity|add:prod.product.quantity }}">
 			</td>
 			<td>{{ prod.product_price }}</td>
 			<td class="actions" data-th="" style="width:10%;">

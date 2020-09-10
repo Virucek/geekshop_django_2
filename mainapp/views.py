@@ -2,6 +2,7 @@
 import random
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 import os
 import json
@@ -17,7 +18,7 @@ def get_same_products(product):
 
 
 def get_hot_product():
-    products = Product.objects.filter(category__is_active=True, is_active=True)
+    products = Product.objects.filter(category__is_active=True, is_active=True, quantity__gt=0)
     return random.sample(list(products), 1)[0]
 
 

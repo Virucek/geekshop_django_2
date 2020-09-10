@@ -13,4 +13,6 @@ urlpatterns = [
 
     path('complete/forming/<int:pk>', ordersapp.order_forming_complete, name='order_forming_complete'),
     path('update/<int:pk>/status/', ordersapp.order_forming_complete, name='order_forming_complete'),
+
+    path('product/<int:pk>/price/quantity/', ordersapp.get_product_price_quantity, name='product_price_quantity'),
 ]
