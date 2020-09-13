@@ -1,4 +1,5 @@
 import requests
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.db.models.signals import pre_save, pre_delete
 from django.dispatch import receiver
@@ -54,6 +55,10 @@ class OrderList(ListView):
         return super().get_queryset().filter(user=self.request.user)
         # return Order.objects.filter(user=self.request.user)
 
+    @method_decorator(login_required())
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
 
 class OrderCreate(CreateView):
     model = Order
@@ -95,9 +100,17 @@ class OrderCreate(CreateView):
 
         return super(OrderCreate, self).form_valid(form)
 
+    @method_decorator(login_required())
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
 
 class OrderRead(DetailView):
     model = Order
+
+    @method_decorator(login_required())
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *self, **args)
 
 
 class OrderEdit(UpdateView):
@@ -106,6 +119,7 @@ class OrderEdit(UpdateView):
     success_url = reverse_lazy('orders:orders_list')
 
     # @method_decorator(correct_user)
+    @method_decorator(login_required())
     @correct_user
     @required_status(statuses=(Order.FORMING,))
     def dispatch(self, *args, **kwargs):
@@ -144,6 +158,7 @@ class OrderDelete(DeleteView):
 
     # @method_decorator(correct_user)
     # @method_decorator(required_status(statuses=(Order.FORMING,)))
+    @method_decorator(login_required())
     @correct_user
     @required_status((Order.FORMING,))
     def dispatch(self, *args, **kwargs):
