@@ -13,12 +13,14 @@ from mainapp.models import ProductCategory, Product
 
 
 def get_same_products(product):
-    same_products = Product.objects.filter(category=product.category, is_active=True).exclude(pk=product.pk)[:4]
+    same_products = Product.objects.filter(category=product.category, is_active=True).exclude(pk=product.pk).\
+                        select_related('category')[:4]
     return same_products
 
 
 def get_hot_product():
-    products = Product.objects.filter(category__is_active=True, is_active=True, quantity__gt=0)
+    products = Product.objects.filter(category__is_active=True, is_active=True, quantity__gt=0).\
+        select_related('category')
     return random.sample(list(products), 1)[0]
 
 
@@ -33,11 +35,12 @@ def catalog(request, pk=None):
     items_on_page = 2
     if pk == 0 or pk is None:
         curr_category = {'pk': 0, 'name': 'Все'}
-        catalog_list = Product.objects.filter(category__is_active=True, is_active=True).order_by('price')
+        catalog_list = Product.objects.filter(category__is_active=True, is_active=True).order_by('price').\
+            select_related('category')
         title = 'каталог товаров'
     else:
         curr_category = get_object_or_404(ProductCategory, pk=pk, is_active=True)
-        catalog_list = Product.objects.filter(category=pk, is_active=True).order_by('price')
+        catalog_list = Product.objects.filter(category=pk, is_active=True).order_by('price').select_related('category')
         title = curr_category.name
     submenu_list = ProductCategory.objects.filter(is_active=True)
     page = request.GET.get('page')
