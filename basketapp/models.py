@@ -30,7 +30,7 @@ class Basket(models.Model):
 
     @property
     def total_price(self):
-        basket_products = Basket.objects.filter(user=self.user)
+        basket_products = Basket.objects.filter(user=self.user).select_related('product')
         return sum(list(map(lambda x: x.product_price, basket_products)))
 
     @property
