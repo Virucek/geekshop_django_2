@@ -110,7 +110,7 @@ class OrderRead(DetailView):
 
     @method_decorator(login_required())
     def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *self, **args)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class OrderEdit(UpdateView):
