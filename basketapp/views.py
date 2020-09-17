@@ -11,7 +11,7 @@ from mainapp.models import Product
 @login_required
 def basket(request):
     title = 'Корзина товаров'
-    baskets = Basket.objects.filter(user=request.user)
+    baskets = Basket.objects.filter(user=request.user).select_related()
 
     content = {
         'title': title,
