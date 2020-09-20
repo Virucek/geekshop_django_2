@@ -27,7 +27,7 @@ class Basket(models.Model):
 
     @cached_property
     def get_items_cache(self):
-        return self.user.basket.select_related
+        return self.user.basket.select_related()
 
     @property
     def product_price(self):
