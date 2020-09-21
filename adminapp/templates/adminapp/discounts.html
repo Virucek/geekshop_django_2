@@ -1,0 +1,39 @@
+{% extends 'adminapp/base.html' %}
+{% load static %}
+{% load custom_tags %}
+
+{% block content %}
+    <div class="categories_list">
+        <a href="{% url 'admin:discount_create' %}">
+            <button class="new_category">новая скидка</button>
+        </a>
+
+        {% for object in object_list %}
+            <div class="category_record {% if not object.is_active %}not_active{% endif %}">
+                <div class="category_name">
+                    № {{ object.pk }}
+                </div>
+                <div class="category_actions">
+<!--                    <a href="{% url 'admin:discount_detail' object.pk %}">-->
+<!--                        <button>подробности</button>-->
+<!--                    </a>-->
+                    <a href="{% url 'admin:discount_update' object.pk %}">
+                        <button>редактировать</button>
+                    </a>
+                    <a href="{% url 'admin:discount_delete' object.pk %}">
+                        <button>
+                        {% if object.is_active %}удалить
+                        {% else %}восстановить
+                        {% endif %}
+                        </button>
+                    </a>
+                </div>
+                <div class="category_desc">
+                    Создан: {{ object.created_at|curr_datetime }} <br/>
+                    Обновлен: {{ object.updated_at|curr_datetime }} <br/>
+                    Тип: {{ object.get_discount_type_display }} <br/>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -7,6 +7,8 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from mainapp.models import ProductCategory, Product
+
 
 class ShopUser(AbstractUser):
     avatar = models.ImageField(upload_to='user_avatars', verbose_name='аватар', blank=True)

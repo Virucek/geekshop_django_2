@@ -35,4 +35,9 @@ urlpatterns = [
     re_path(r'^orders/(?P<pk>\d+)/status/next/$', adminapp.order_status_next, name='order_status_next'),
     re_path(r'^orders/(?P<pk>\d+)/cancel/$', adminapp.order_cancel_customer, name='order_cancel_customer'),
 
+    path('discounts/', adminapp.DiscountsListView.as_view(), name='discounts'),
+    path('discounts/create/', adminapp.DiscountCreateView.as_view(), name='discount_create'),
+    path('discounts/<int:pk>/', adminapp.DiscountDetailView.as_view(), name='discount_detail'),
+    path('discounts/edit/<int:pk>/', adminapp.DiscountUpdateView.as_view(), name='discount_update'),
+    path('discounts/delete/<int:pk>/', adminapp.DiscountDeleteView.as_view(), name='discount_delete'),
 ]

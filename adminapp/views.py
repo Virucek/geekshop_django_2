@@ -1,6 +1,9 @@
 from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db import transaction
+from django.db import transaction, connection
+from django.db.models import F
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
@@ -10,6 +13,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, D
 
 from adminapp.forms import ShopUserAdminEditForm, ProductCategoryAdminEditForm, ProductAdminEditForm, \
     MerchTypeAdminEditForm
+from adminapp.models import Discount
 from authapp.forms import ShopUserRegisterForm
 from authapp.models import ShopUser
 from mainapp.models import ProductCategory, Product, MerchType
@@ -29,6 +33,12 @@ STATUS_ORDER_BUTTONS = (
     (Order.PROCEED, 'Оплатить'),
     (Order.PAID, 'Готов'),
 )
+
+
+def db_profile_by_type(prefix, type, queries):
+    update_queries = list(filter(lambda x: type in x['sql'], queries))
+    print(f'db_profile {type} for {prefix}:')
+    [print (query['sql']) for query in update_queries]
 
 
 class ClassBasedViewMixin:
@@ -114,8 +124,18 @@ class CategoryEditView(ClassBasedViewMixin, UpdateView):
     model = ProductCategory
     template_name = 'adminapp/category_update.html'
     success_url = reverse_lazy('admin:categories')
-    fields = '__all__'
+    # fields = '__all__'
+    form_class = ProductCategoryAdminEditForm
     title = 'категории / редактирование'
+
+    def form_valid(self, form):
+        if 'discount' in form.cleaned_data:
+            discount = form.cleaned_data['discount']
+            if discount:
+                self.object.product_set.update(price=F('price') * (1 - discount / 100))
+                db_profile_by_type(self.__class__, 'UPDATE', connection.queries)
+
+        return super().form_valid(form)
 
 
 class CategoryDeleteView(ClassBasedViewMixin, DeleteView):
@@ -340,3 +360,107 @@ def order_cancel_customer(request, pk):
     object.is_active = False
     object.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@receiver(pre_save, sender=ProductCategory)
+def update_is_active_product_by_change_productcategory(sender, instance, **kwargs):
+    if instance.pk:
+        if instance.is_active:
+            instance.product_set.update(is_active=True)
+        else:
+            instance.product_set.update(is_active=False)
+
+        # db_profile_by_type(sender, 'UPDATE', connection.queries)
+
+
+class DiscountsListView(ClassBasedViewMixin, ListView):
+    model = Discount
+    title = 'админка / скидки'
+    template_name = 'adminapp/discounts.html'
+
+
+class DiscountCreateView(ClassBasedViewMixin, CreateView):
+    model = Discount
+    title = 'скидки / создание'
+    template_name = 'adminapp/discount_update.html'
+    success_url = reverse_lazy('admin:discounts')
+
+    # def get_context_data(self, **kwargs):
+    #     data = super(OrderCreateView, self).get_context_data(**kwargs)
+    #     OrderFormSet = inlineformset_factory(Order, OrderItem, OrderItemForm, extra=1)
+    #
+    #     if self.request.POST:
+    #         formset = OrderFormSet(self.request.POST)
+    #     else:
+    #         formset = OrderFormSet()
+    #
+    #     data['orderitems'] = formset
+    #     return data
+    #
+    # def form_valid(self, form):
+    #     context = self.get_context_data()
+    #     orderitems = context['orderitems']
+    #     with transaction.atomic():
+    #         self.object = form.save()
+    #         if orderitems.is_valid():
+    #             orderitems.instance = self.object
+    #             orderitems.save()
+    #
+    #     return super(OrderCreateView, self).form_valid(form)
+
+
+class DiscountDetailView(ClassBasedViewMixin, DetailView):
+    model = Order
+    template_name = 'adminapp/discount.html'
+    title = 'скидки / подробнее'
+
+
+class DiscountUpdateView(ClassBasedViewMixin, UpdateView):
+    model = Order
+    title = 'скидки / редактирование'
+    fields = ['status']
+    template_name = 'adminapp/discount_update.html'
+    success_url = reverse_lazy('admin:discounts')
+
+    # def get_context_data(self, **kwargs):
+    #     data = super(OrderUpdateView, self).get_context_data(**kwargs)
+    #     OrderFormSet = inlineformset_factory(Order, OrderItem, OrderItemForm, extra=1)
+    #
+    #     if self.request.POST:
+    #         formset = OrderFormSet(self.request.POST, instance=self.object)
+    #     else:
+    #         formset = OrderFormSet(instance=self.object)
+    #
+    #     data['orderitems'] = formset
+    #     return data
+    #
+    # def form_valid(self, form):
+    #     context = self.get_context_data()
+    #     orderitems = context['orderitems']
+    #     with transaction.atomic():
+    #         self.object = form.save()
+    #         if orderitems.is_valid():
+    #             orderitems.instance = self.object
+    #             orderitems.save()
+    #
+    #     return super(OrderUpdateView, self).form_valid(form)
+
+
+class DiscountDeleteView(ClassBasedViewMixin, DeleteView):
+    model = Order
+    title = 'скидки / удаление'
+    template_name = 'adminapp/discount_delete.html'
+    success_url = reverse_lazy('admin:discounts')
+
+# если заказ удаляется, ему присваивается статус "отменен"
+#     def delete(self, request, *args, **kwargs):
+#         self.object = self.get_object()
+#         if self.object.is_active:
+#             self.object.is_active = False
+#             self.object.status = Order.REFUSED
+#         else:
+#             self.object.is_active = True
+#             self.object.status = Order.FORMING
+#         self.object.save()
+#
+#         return HttpResponseRedirect(self.get_success_url())

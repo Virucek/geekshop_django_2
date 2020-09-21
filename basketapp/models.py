@@ -21,7 +21,7 @@ class Basket(models.Model):
     add_datetime = models.DateTimeField(verbose_name='Дата добавления', auto_now_add=True)
 
     # objects = BasketQuerySet.as_manager()
-
+    @staticmethod
     def get_item(pk):
         return Basket.objects.filter(pk=pk).first()
 
