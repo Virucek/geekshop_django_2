@@ -23,4 +23,10 @@
             заказы
         </a>
     </li>
+    <li>
+        <a href="{% url 'admin:discounts' %}"
+        class="{% if request.resolver_match.url_name == 'discounts' or discounts.name %}active{% endif %}">
+            скидки
+        </a>
+    </li>
 </ul>

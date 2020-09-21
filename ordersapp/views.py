@@ -1,6 +1,7 @@
 import requests
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.db.models import F
 from django.db.models.signals import pre_save, pre_delete
 from django.dispatch import receiver
 from django.forms import inlineformset_factory
@@ -180,8 +181,11 @@ def product_quantity_update_save(sender, update_fields, instance, **kwargs):
     # print(f'update_fields -- {update_fields}')
     # if update_fields is 'products' or 'quantity':
     if instance.pk:
-        instance.product.quantity -= instance.quantity - sender.get_item(instance.pk).quantity
+        if sender.get_item(instance.pk) is not None: # для миграции БД
+            instance.product.quantity -= instance.quantity - sender.get_item(instance.pk).quantity
+        # instance.product.quantity = F('quantity') - sender.get_item(instance.pk).quantity
     else:
+        # instance.product.quantity = F('quantity') - instance.quantity
         instance.product.quantity -= instance.quantity
     instance.product.save()
 
@@ -190,6 +194,7 @@ def product_quantity_update_save(sender, update_fields, instance, **kwargs):
 @receiver(pre_delete, sender=Basket)
 def product_quantity_delete(sender, instance, **kwargs):
     instance.product.quantity += instance.quantity
+    # instance.product.quantity = F('quantity') + instance.quantity
     instance.product.save()
 
 

@@ -94,11 +94,11 @@ def get_products_by_category(pk):
         key = f'products_by_category_{pk}'
         products = cache.get(key)
         if products is None:
-            products = Product.objects.filter(category__pk=pk, is_active=True).selected_related('category')
+            products = Product.objects.filter(category__pk=pk, is_active=True).select_related('category')
             cache.set(key, products)
         return products
     else:
-        return Product.objects.filter(category__pk=pk, is_active=True).selected_related('category')
+        return Product.objects.filter(category__pk=pk, is_active=True).select_related('category')
 
 
 def get_products_quantity_gt_zero():
@@ -122,7 +122,9 @@ def get_same_products(product):
 
 def get_hot_product():
     products = get_products_quantity_gt_zero()
-    return random.sample(list(products), 1)[0]
+    if products:
+        return random.sample(list(products), 1)[0]
+    return None
 
 
 def main(request):

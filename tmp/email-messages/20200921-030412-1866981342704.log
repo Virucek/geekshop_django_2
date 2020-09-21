@@ -1,0 +1,12 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Finish your registration
+From: django@geekbrains.local
+To: test@test.ru
+Date: Mon, 21 Sep 2020 00:04:12 -0000
+Message-ID: <160064665278.3732.14192566614923047974@DESKTOP-VE3O52S>
+
+Please, follow link below to finish your registration, django6566, on portal MerchMag!               
+Link: http://localhost:8000/auth/verify/test@test.ru/81805375e0fcb5c7071f3024b0b632713ef1d0ac/
+-------------------------------------------------------------------------------

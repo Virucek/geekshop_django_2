@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-	{% if request.resolver_match.kwargs.pk is None %}
+	{% if request.resolver_match.kwargs.pk is None and hot_product is not None %}
 		<div class="hot_product">
 			<a href="{% url 'catalog:product' hot_product.pk %}">
 			<img src="/media/{{ hot_product.image }}">
